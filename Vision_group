@@ -1,0 +1,15 @@
+import cv2
+import numpy as np
+img = cv2.imread("/Users/qq/Downloads/Vision_Group_Guidelines-main/色块识别/tag.png")
+imgGaussian = cv2.GaussianBlur(img,(11,11),0)#高斯模糊
+hsv = cv2.cvtColor(imgGaussian,cv2.COLOR_BGR2HSV)#转化HSV颜色空间
+erode_hsv = cv2.erode(hsv,None,iterations=1)#腐蚀处理
+imgGray= cv2.cvtColor(hsv,cv2.COLOR_BGR2GRAY)#灰值处理
+lower_hsv = np.array([60, 60, 46])  # 提取颜色的低值
+high_hsv = np.array([124, 255, 255])  # 提取颜色的高值
+mask = cv2.inRange(hsv, lowerb=lower_hsv, upperb=high_hsv)#二值化处理
+cnts,hierarchy= cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)#找出轮廓
+cv2.drawContours(img,cnts,-1,(0,255,255),3)#在原图上勾绘
+cv2.imshow("img",img)
+cv2.waitKey(0)
+cv2.destroyAllwindows()
